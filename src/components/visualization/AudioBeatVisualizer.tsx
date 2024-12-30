@@ -1,26 +1,22 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useAudioContext } from '../../contexts/AudioContext';
 
-interface Props {
-  audioData: Uint8Array;
-  bassLevel: number;
-}
-
-export const AudioVisualizerScene: React.FC<Props> = ({ audioData, bassLevel }) => {
+export const AudioBeatVisualizer = () => {
+  const { audioData, bassLevel } = useAudioContext();
   const groupRef = useRef<THREE.Group>(null);
-  const particlesRef = useRef<THREE.Points>(null);
   
   const particles = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    const particleCount = 1000;
+    const particleCount = 2000;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     
     for (let i = 0; i < particleCount; i++) {
-      const radius = 3 + Math.random() * 2;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
+      const radius = 3 + Math.random() * 2;
       
       positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
@@ -38,7 +34,7 @@ export const AudioVisualizerScene: React.FC<Props> = ({ audioData, bassLevel }) 
   }, []);
 
   useFrame((state) => {
-    if (!groupRef.current || !particlesRef.current) return;
+    if (!groupRef.current) return;
     
     const time = state.clock.getElapsedTime();
     groupRef.current.rotation.y = time * 0.1;
@@ -51,26 +47,24 @@ export const AudioVisualizerScene: React.FC<Props> = ({ audioData, bassLevel }) 
       const audioIndex = i3 % audioData.length;
       const audioValue = audioData[audioIndex] / 255;
       
-      const originalX = positions[i];
-      const originalY = positions[i + 1];
-      const originalZ = positions[i + 2];
+      const originalPos = new THREE.Vector3(
+        positions[i],
+        positions[i + 1],
+        positions[i + 2]
+      ).normalize();
       
-      const distance = Math.sqrt(
-        originalX * originalX +
-        originalY * originalY +
-        originalZ * originalZ
-      );
+      const scale = 3 + (audioValue * bassLevel * 2);
       
-      const scale = 1 + (audioValue * bassLevel * 0.5);
+      positions[i] = originalPos.x * scale;
+      positions[i + 1] = originalPos.y * scale;
+      positions[i + 2] = originalPos.z * scale;
       
-      positions[i] = originalX * scale;
-      positions[i + 1] = originalY * scale;
-      positions[i + 2] = originalZ * scale;
-      
-      // Dynamic color based on audio and position
-      colors[i] = 0.5 + Math.sin(time + distance) * 0.5;
-      colors[i + 1] = 0.5 + Math.cos(time + distance) * 0.5;
-      colors[i + 2] = 0.5 + Math.sin(time * 0.5 + distance) * 0.5;
+      // Dynamic color based on audio intensity
+      const hue = (time * 0.1 + audioValue) % 1;
+      const color = new THREE.Color().setHSL(hue, 0.8, 0.5);
+      colors[i] = color.r;
+      colors[i + 1] = color.g;
+      colors[i + 2] = color.b;
     }
     
     particles.attributes.position.needsUpdate = true;
@@ -79,11 +73,7 @@ export const AudioVisualizerScene: React.FC<Props> = ({ audioData, bassLevel }) 
 
   return (
     <group ref={groupRef}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#ff0066" />
-      <pointLight position={[-10, -10, -10]} intensity={1} color="#00ffff" />
-      
-      <points ref={particlesRef} geometry={particles}>
+      <points geometry={particles}>
         <pointsMaterial
           size={0.05}
           vertexColors

@@ -10,6 +10,10 @@ interface Props {
 }
 
 export const Playlist: React.FC<Props> = ({ songs, currentSong, onSongSelect }) => {
+  const handleSongSelect = async (song: Song) => {
+    onSongSelect(song);
+  };
+
   return (
     <div className="bg-[#111111] border border-[#333333] rounded-xl overflow-hidden">
       <div className="p-6">
@@ -20,7 +24,7 @@ export const Playlist: React.FC<Props> = ({ songs, currentSong, onSongSelect }) 
         {songs.map((song) => (
           <div
             key={song.id}
-            onClick={() => onSongSelect(song)}
+            onClick={() => handleSongSelect(song)}
             className={`flex items-center gap-4 p-4 hover:bg-[#1a1a1a] cursor-pointer transition-colors ${
               currentSong?.id === song.id ? 'bg-[#1a1a1a]' : ''
             }`}
