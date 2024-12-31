@@ -1,0 +1,21 @@
+.visualizer-container {
+  @apply relative w-full h-full overflow-hidden;
+  perspective: 1000px;
+}
+
+.frequency-bar {
+  @apply absolute bottom-0 w-1 rounded-t-lg;
+  background: linear-gradient(180deg, theme('colors.pink.500'), theme('colors.purple.500'));
+  transform-origin: bottom;
+  transition: transform 50ms ease-out;
+}
+
+.bass-ripple {
+  @apply absolute rounded-full;
+  background: radial-gradient(circle, theme('colors.pink.500/50'), transparent);
+}
+
+.particle {
+  @apply absolute rounded-full;
+  background: radial-gradient(circle, theme('colors.white'), transparent);
+}

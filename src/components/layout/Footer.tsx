@@ -3,7 +3,7 @@ import { Github, Linkedin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-black/50 backdrop-blur-sm py-2 px-4 text-center text-sm text-gray-400">
+    <footer className="w-full bg-black/50 backdrop-blur-sm py-4 px-4 text-center text-sm text-gray-400">
       <p className="flex items-center justify-center gap-2">
         Made with ♥ by Aayush518
         <a

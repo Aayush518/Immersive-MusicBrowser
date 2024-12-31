@@ -2,59 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
   }
-  25% {
-    transform: translateY(-20px) translateX(10px);
+  
+  body {
+    @apply bg-[#0A0A0A] text-white antialiased min-h-screen;
+    background-image: 
+      radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+  }
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-md;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text;
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
   }
   50% {
-    transform: translateY(-10px) translateX(-10px);
-  }
-  75% {
-    transform: translateY(-30px) translateX(5px);
+    opacity: 0.4;
+    transform: scale(1.1);
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
 }
 
-.animate-float {
-  animation: float linear infinite;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out forwards;
+.delay-1000 {
+  animation-delay: -1s;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111111;
+  @apply bg-black/50;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
-  border-radius: 4px;
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+/* Touch-friendly tap targets */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  input[type="range"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
 }
 
-/* Smooth transitions */
-.transition-all {
-  transition-duration: 300ms;
+/* Better range inputs */
+input[type="range"] {
+  @apply appearance-none bg-transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 rounded-full bg-white cursor-pointer shadow-lg shadow-black/20;
+  margin-top: -6px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply h-1 rounded-full bg-white/10;
 }

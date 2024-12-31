@@ -1,19 +1,17 @@
 import React from 'react';
-import { Music, Play } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { Song } from '../types/music';
 import { formatTime } from '../utils/audioUtils';
+import { SongMetadata } from './player/SongMetadata';
 
 interface Props {
   songs: Song[];
   currentSong: Song | null;
   onSongSelect: (song: Song) => void;
+  isPlaying: boolean;
 }
 
-export const Playlist: React.FC<Props> = ({ songs, currentSong, onSongSelect }) => {
-  const handleSongSelect = async (song: Song) => {
-    onSongSelect(song);
-  };
-
+export const Playlist: React.FC<Props> = ({ songs, currentSong, onSongSelect, isPlaying }) => {
   return (
     <div className="bg-[#111111] border border-[#333333] rounded-xl overflow-hidden">
       <div className="p-6">
@@ -24,38 +22,27 @@ export const Playlist: React.FC<Props> = ({ songs, currentSong, onSongSelect }) 
         {songs.map((song) => (
           <div
             key={song.id}
-            onClick={() => handleSongSelect(song)}
+            onClick={() => onSongSelect(song)}
             className={`flex items-center gap-4 p-4 hover:bg-[#1a1a1a] cursor-pointer transition-colors ${
               currentSong?.id === song.id ? 'bg-[#1a1a1a]' : ''
             }`}
           >
-            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10">
-              {song.coverArt ? (
-                <img
-                  src={song.coverArt}
-                  alt={song.title}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              ) : (
-                <Music className="w-6 h-6 text-pink-500" />
-              )}
-            </div>
-            
-            <div className="flex-1 min-w-0">
-              <h3 className="text-white font-medium truncate">
-                {song.title}
-              </h3>
-              <p className="text-sm text-gray-400">{song.artist}</p>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-400">
-                {formatTime(song.duration)}
-              </span>
+            <div className="relative flex-1">
+              <SongMetadata song={song} showAlbum={true} size="sm" />
               {currentSong?.id === song.id && (
-                <Play className="w-5 h-5 text-pink-500" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 p-2">
+                  {isPlaying ? (
+                    <Pause className="w-5 h-5 text-pink-500" />
+                  ) : (
+                    <Play className="w-5 h-5 text-pink-500" />
+                  )}
+                </div>
               )}
             </div>
+            
+            <span className="text-sm text-gray-400 ml-4">
+              {formatTime(song.duration)}
+            </span>
           </div>
         ))}
       </div>

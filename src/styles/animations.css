@@ -1,26 +1,40 @@
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.5);
+  }
 }
 
-@keyframes glow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.5); }
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(100px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(100px) rotate(-360deg);
+  }
 }
 
-.animate-pulse {
-  animation: pulse 2s infinite;
+.animate-ripple {
+  animation: ripple 1.5s ease-out infinite;
 }
 
-.animate-float {
-  animation: float 6s infinite;
+.animate-wave {
+  animation: wave 1.2s ease-in-out infinite;
 }
 
-.animate-glow {
-  animation: glow 2s infinite;
+.animate-orbit {
+  animation: orbit 8s linear infinite;
 }
